@@ -25,29 +25,32 @@ export const Form = () => {
 	const validateSchema = {
 		email: {
 			isRequired: {
-				massage: 'Email is required',
+				massage: 'Email - поле обязательно для ввода',
 			},
 			isEmail: {
-				massage: 'Email is invalid',
+				massage: 'Email - неверный ',
 			},
 		},
 		name: {
 			isRequired: {
-				massage: 'Name is required',
+				massage: 'Name - поле обязательно для ввода',
 			},
 		},
 		password: {
 			isRequired: {
-				massage: 'Password is required',
+				massage: 'Password - поле обязательно для ввода',
 			},
 			min: {
-				massage: 'Password must be large then 6 sembol',
+				massage: 'Password - должен иметь не менее 6 символов',
 				param: 6,
 			},
 		},
 		cheackPassword: {
+			isRequired: {
+				massage: 'cheackPassword - поле обязательно для ввода',
+			},
 			matchPassword: {
-				massage: "Password dont't match",
+				massage: 'Пароли не совпадают ',
 				param: 'password',
 			},
 		},
@@ -55,6 +58,7 @@ export const Form = () => {
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
+		console.log(value);
 	};
 
 	useEffect(() => {
@@ -70,7 +74,6 @@ export const Form = () => {
 
 	return (
 		<div className={style.FormPage}>
-			<h1 className={style.Title}>Title</h1>
 			<form onSubmit={handleSubmit}>
 				<TextField
 					name="name"
@@ -109,15 +112,9 @@ export const Form = () => {
 					error={error.cheackPassword}
 				/>
 
-				<Button
-					onClick={() => console.log(value)}
-					theme="primary"
-					disabled={!isValid}
-					ref={buttonRef}
-				>
-					Submit
+				<Button theme="primary" disabled={!isValid} ref={buttonRef}>
+					Зарегистрироваться
 				</Button>
-				<button onClick={() => console.log(value)}>Reg</button>
 			</form>
 		</div>
 	);

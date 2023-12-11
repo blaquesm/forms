@@ -37,7 +37,7 @@
 	display: block;
 	color: red;
 	font-size: 12px;
-	position: absolute;
+	position: relative;
 }
 .ButtonSvg {
 	position: absolute;
