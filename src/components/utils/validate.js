@@ -21,14 +21,3 @@ export const validate = (values, config) => {
 
 	return error;
 };
-
-// const validator = (rulName, value) => {
-// 	switch (rulName) {
-// 		case 'isEmail':
-// 			return isEmail(value);
-// 		case 'isRequired':
-// 			return isRequired(value);
-// 		default:
-// 			break;
-// 	}
-// };

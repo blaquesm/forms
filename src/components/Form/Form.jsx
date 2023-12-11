@@ -1,8 +1,10 @@
 import { useEffect, useState, useRef } from 'react';
+import * as yup from 'yup';
 import style from './Form.module.css';
 import TextField from '../TextField/TextField';
 import { validate } from '../utils/validate';
 import Button from '../Button/Button';
+import { parseYupError } from '../utils/parsYupError';
 
 export const Form = () => {
 	const [value, setValue] = useState({
@@ -18,43 +20,28 @@ export const Form = () => {
 		setValue((prevState) => ({ ...prevState, [target.name]: target.value }));
 	};
 
+	const validateSchema = yup.object().shape({
+		email: yup
+			.string()
+			.required('Поле email обязательно к заполнеению')
+			.email('email введен некоректно'),
+		name: yup.string().required('Поле name обязательно к заполнеению'),
+		password: yup
+			.string()
+			.required('Поле password обязательно к заполнеению')
+			.min(6, 'Поле password должен быть не менее 6 символов'),
+		cheackPassword: yup
+			.string()
+			.required('Поле cheackPassword обязательно к заполнеению')
+			.oneOf([yup.ref('password')], 'Пароли не совпадают'),
+	});
+
 	const buttonRef = useRef(null);
-
 	const isValid = Object.keys(error).length === 0;
-
-	const validateSchema = {
-		email: {
-			isRequired: {
-				massage: 'Email is required',
-			},
-			isEmail: {
-				massage: 'Email is invalid',
-			},
-		},
-		name: {
-			isRequired: {
-				massage: 'Name is required',
-			},
-		},
-		password: {
-			isRequired: {
-				massage: 'Password is required',
-			},
-			min: {
-				massage: 'Password must be large then 6 sembol',
-				param: 6,
-			},
-		},
-		cheackPassword: {
-			matchPassword: {
-				massage: "Password dont't match",
-				param: 'password',
-			},
-		},
-	};
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
+		console.log(value);
 	};
 
 	useEffect(() => {
@@ -64,13 +51,19 @@ export const Form = () => {
 	}, [isValid]);
 
 	useEffect(() => {
-		const error = validate(value, validateSchema);
-		setError(error);
+		validateSchema
+			.validate(value, { abortEarly: false })
+			.then(() => {
+				setError({});
+			})
+			.catch((yupError) => {
+				const error = parseYupError(yupError);
+				setError(error);
+			});
 	}, [value]);
 
 	return (
 		<div className={style.FormPage}>
-			<h1 className={style.Title}>Title</h1>
 			<form onSubmit={handleSubmit}>
 				<TextField
 					name="name"
@@ -109,15 +102,9 @@ export const Form = () => {
 					error={error.cheackPassword}
 				/>
 
-				<Button
-					onClick={() => console.log(value)}
-					theme="primary"
-					disabled={!isValid}
-					ref={buttonRef}
-				>
-					Submit
+				<Button theme="primary" disabled={!isValid} ref={buttonRef}>
+					Зарегистрироваться
 				</Button>
-				<button onClick={() => console.log(value)}>Reg</button>
 			</form>
 		</div>
 	);
